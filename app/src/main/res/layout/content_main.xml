@@ -17,8 +17,8 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
         android:id="@+id/llmenu"
         android:background="#3399CC"
         android:gravity="center"
@@ -36,8 +36,26 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:background="#3399CC"
+        android:gravity="center"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="63dp"
+        android:onClick="gotoMyLocation"
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_gps"
+            android:onClick="gotoMyLocation"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
         android:background="#3399CC"
         android:gravity="center"
         android:layout_marginTop="10dp"
@@ -56,19 +74,19 @@
         android:id="@+id/imgvJam"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
         android:onClick="warningJam"
         android:src="@drawable/btn_jam"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp" />
+        android:layout_marginBottom="100dp"
+        android:layout_marginLeft="10dp"/>
 
     <ImageView
         android:id="@+id/imgvAccident"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
         android:onClick="warningAccident"
         android:src="@drawable/btn_accident"
         android:layout_marginBottom="35dp"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="10dp"/>
 </RelativeLayout>

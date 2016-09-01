@@ -233,21 +233,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.mnSearch) {
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
             Common.checkButtonClick = true;
@@ -351,6 +336,14 @@ public class MainActivity extends AppCompatActivity
             // TODO: Handle the error.
         }
     }
+
+    public void gotoMyLocation(View view) {
+        isShowMyLocation = false;
+        mMap.clear();
+        mLocationProvider = new LocationProvider(this, this);
+        mLocationProvider.connect();
+    }
+
     //canh bao tac duong
 
     public void warningJam(View view) {
@@ -405,9 +398,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
-
+        mMap.getUiSettings().setZoomControlsEnabled(true);
         mLocationProvider = new LocationProvider(this, this);
         mLocationProvider.connect();
 
@@ -421,6 +413,12 @@ public class MainActivity extends AppCompatActivity
                     LatLng origin = new LatLng(currentLatitude, currentLongitude);
                     String url = getDirectionsUrl(origin, dest);
                     new DownloadTask().execute(url);
+
+                    mMap.addMarker(new MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_gps))
+                            .position(origin)
+                    );
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 15));
                 } else {
                     dialogUltil.showDialogCheckNetwork(MainActivity.this);
                 }
@@ -453,6 +451,7 @@ public class MainActivity extends AppCompatActivity
 
                 if ("".equals(address)) {
                     Toast.makeText(MainActivity.this, "Loi khong lay duoc dia chi hien tai cua ban!", Toast.LENGTH_LONG).show();
+                    Common.checkButtonClick = false;
                 } else {
                     if (category_Id == 1) {
                         Common.isCheckSendWardningJam = false;
@@ -492,6 +491,10 @@ public class MainActivity extends AppCompatActivity
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
         if (!isShowMyLocation) {
             isShowMyLocation = true;
+            mMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.marker_gps))
+                    .position(latLng)
+            );
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
     }
