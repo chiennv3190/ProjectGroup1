@@ -15,22 +15,60 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"></fragment>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:id="@+id/llmenu"
+        android:background="#3399CC"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:onClick="openNav"
+        android:layout_alignParentRight="false">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/menu"
+            android:onClick="openNav"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:background="#3399CC"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:onClick="openSearch"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/search"
+            android:onClick="openSearch"/>
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/imgvJam"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:onClick="warningJam"
-        android:src="@drawable/btn_jam" />
+        android:src="@drawable/btn_jam"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp" />
 
     <ImageView
         android:id="@+id/imgvAccident"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_below="@+id/imgvJam"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:onClick="warningAccident"
-        android:src="@drawable/btn_accident" />
+        android:src="@drawable/btn_accident"
+        android:layout_marginBottom="35dp"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>

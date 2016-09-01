@@ -172,13 +172,6 @@ public class MainActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.setDrawerListener(toggle);
-//        toggle.syncState();
-
-
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         if (!DeviceInformationUltil.checkGPSEnable(this)) {
@@ -247,20 +240,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.mnSearch) {
-            try {
-                AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS).setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
-                        .build();
-                Intent intent =
-                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                                .setFilter(typeFilter)
-                                .build(this);
-                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-            } catch (GooglePlayServicesRepairableException e) {
-                // TODO: Handle the error.
-            } catch (GooglePlayServicesNotAvailableException e) {
-                // TODO: Handle the error.
-            }
+
             return true;
         }
 
@@ -272,7 +252,6 @@ public class MainActivity extends AppCompatActivity
         if (position == 0 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
             Common.checkButtonClick = true;
             mMap.clear();
-            toolbar.setTitle("WARNING");
             Intent i = new Intent(MainActivity.this, WarningActivity.class);
             startActivity(i);
             drawerLayout.closeDrawer(nav_draw);
@@ -294,8 +273,6 @@ public class MainActivity extends AppCompatActivity
             dialogUltil.progressDialog(MainActivity.this, message);
 
             mMap.clear();
-            toolbar.setTitle("ATM");
-
             listATM = warningAPI.getAllATM();
             for (int i = 0; i < listATM.size(); i++) {
                 LatLng atm = new LatLng(listATM.get(i).getmLatATM(), listATM.get(i).getmLngATM());
@@ -306,7 +283,7 @@ public class MainActivity extends AppCompatActivity
         } else if (position == 3 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
             message = "Loading Bank. Please wait...";
             dialogUltil.progressDialog(MainActivity.this, message);
-            toolbar.setTitle("ATM");
+
             listBank = warningAPI.getBank();
             dialogBank = new Dialog(MainActivity.this);
             dialogBank.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -340,7 +317,6 @@ public class MainActivity extends AppCompatActivity
             String message = "Loading coffee. Please wait...";
             dialogUltil.progressDialog(MainActivity.this, message);
             mMap.clear();
-            toolbar.setTitle("Coffee");
 
             listCoffee = warningAPI.getCoffee();
             for (int i = 0; i < listCoffee.size(); i++) {
@@ -359,6 +335,22 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.openDrawer(nav_draw);
     }
 
+    public void openSearch(View view) {
+        try {
+            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS).setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+                    .build();
+            Intent intent =
+                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                            .setFilter(typeFilter)
+                            .build(this);
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // TODO: Handle the error.
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // TODO: Handle the error.
+        }
+    }
     //canh bao tac duong
 
     public void warningJam(View view) {
@@ -415,12 +407,6 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
 
         mMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setZoomGesturesEnabled(true);
 
         mLocationProvider = new LocationProvider(this, this);
         mLocationProvider.connect();
@@ -613,8 +599,6 @@ public class MainActivity extends AppCompatActivity
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
-
-
 
 
     private class DownloadTask extends AsyncTask<String, Void, String> {
