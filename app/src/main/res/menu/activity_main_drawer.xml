@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_warning"
+            android:icon="@mipmap/warning"
+            android:title="Cảnh báo" />
+        <item
+            android:id="@+id/nav_gas"
+            android:icon="@mipmap/gas_station"
+            android:title="Cây xăng" />
+        <item
+            android:id="@+id/nav_atm"
+            android:icon="@mipmap/atm"
+            android:title="Tất cả ATM" />
+        <item
+            android:id="@+id/nav_searchATM"
+            android:icon="@mipmap/bank"
+            android:title="ATM theo ngân hàng" />
+        <item
+            android:id="@+id/nav_coffee"
+            android:icon="@mipmap/cafe"
+            android:title="Coffee" />
+    </group>
+
+</menu>
