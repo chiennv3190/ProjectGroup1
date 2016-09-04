@@ -209,7 +209,6 @@ public class MainActivity extends AppCompatActivity
             Log.e("exception", e.toString());
         }
 
-
         AppEventsLogger.activateApp(this);
         shareDialog = new ShareDialog(this);
         share = (LinearLayout) findViewById(R.id.share);
@@ -668,7 +667,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            new ParserTask().execute(result);
+            if("".equals(result) || null != result){
+                new ParserTask().execute(result);
+            }
         }
     }
 
