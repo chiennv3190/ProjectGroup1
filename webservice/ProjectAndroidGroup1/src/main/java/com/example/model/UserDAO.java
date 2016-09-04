@@ -63,11 +63,12 @@ public class UserDAO {
 		try {
 
 			PreparedStatement preparedStatement = connection
-					.prepareStatement("update user set user_lat = ?, user_lng = ? where user_device_ui_id = ?");
+					.prepareStatement("update user set user_lat = ?, user_lng = ?, token = ? where user_device_ui_id = ?");
 
 			preparedStatement.setDouble(1, user.getUser_lat());
 			preparedStatement.setDouble(2, user.getUser_lng());
-			preparedStatement.setString(3, user.getUser_device_ui_id());
+			preparedStatement.setString(3, user.getToken());
+			preparedStatement.setString(4, user.getUser_device_ui_id());
 
 			preparedStatement.executeUpdate();
 		} catch (SQLException e) {
