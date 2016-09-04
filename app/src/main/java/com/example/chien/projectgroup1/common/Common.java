@@ -11,4 +11,5 @@ public class Common {
     public static String device_id;
     public static boolean isCheckSendWardningJam = true;
     public static boolean isCheckSendWardningAccident = true;
+    public static boolean isCheckDialogSuccess = false;
 }

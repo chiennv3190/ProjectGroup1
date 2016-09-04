@@ -85,6 +85,7 @@ public class DialogUltil {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.cancel();
+                Common.isCheckDialogSuccess = false;
             }
         });
         AlertDialog alert = alertDialogBuilder.create();

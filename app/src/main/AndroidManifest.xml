@@ -33,12 +33,33 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1567135340260473"
+            android:exported="true" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBkLSBom4FNwrfjnLv5HBDJ6MiREu0nD94" />
 
         <activity
             android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".SplashScreenActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -58,10 +79,11 @@
 
         <activity
             android:name=".WarningActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
 
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
 
         <service android:name=".ultil.MyFirebaseMessagingService">
@@ -75,9 +97,11 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".ultil.SendLocationBroadCastReceiver"/>
-        <receiver android:name=".ultil.SendWarningJamBroadCastReceiver"/>
-        <receiver android:name=".ultil.SendWarningAccidentBroadCastReceiver"/>
+        <receiver android:name=".ultil.SendLocationBroadCastReceiver" />
+        <receiver android:name=".ultil.SendWarningJamBroadCastReceiver" />
+        <receiver android:name=".ultil.SendWarningAccidentBroadCastReceiver" />
+
+        <activity android:name=".WelcomeActivity"></activity>
     </application>
 
 </manifest>

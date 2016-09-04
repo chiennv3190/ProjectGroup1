@@ -1,6 +1,5 @@
 package com.example.chien.projectgroup1;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -9,28 +8,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -54,6 +49,10 @@ import com.example.chien.projectgroup1.ultil.LocationProvider;
 import com.example.chien.projectgroup1.ultil.SendLocationBroadCastReceiver;
 import com.example.chien.projectgroup1.ultil.SendWarningAccidentBroadCastReceiver;
 import com.example.chien.projectgroup1.ultil.SendWarningJamBroadCastReceiver;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -73,7 +72,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +83,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity
     private ListView lvBank;
     private double currentLatitude;
     private double currentLongitude;
-    private Toolbar toolbar;
 
     private JSONParser jsonParser = new JSONParser();
     private String address = "";
@@ -133,6 +132,9 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private LinearLayout nav_draw;
 
+    private ShareDialog shareDialog;
+    private LinearLayout share;
+
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -151,6 +153,8 @@ public class MainActivity extends AppCompatActivity
             StrictMode.setThreadPolicy(policy);
         }
 
+
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         nav_draw = (LinearLayout) findViewById(R.id.nav_draw);
 
@@ -164,9 +168,6 @@ public class MainActivity extends AppCompatActivity
         navItemAdapter = new NavItemAdapter(MainActivity.this, R.layout.item_listview_nav, arrayListNav);
         lvNav.setAdapter(navItemAdapter);
         lvNav.setOnItemClickListener(this);
-
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -190,6 +191,28 @@ public class MainActivity extends AppCompatActivity
         //send warning accident
         Intent iWarningAccident = new Intent(MainActivity.this, SendWarningAccidentBroadCastReceiver.class);
         pendingIntentWarningAccident = PendingIntent.getBroadcast(MainActivity.this, 0, iWarningAccident, 0);
+
+        PackageInfo info;
+        try {
+            info = getPackageManager().getPackageInfo("com.example.chien.projectgroup1", PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+            }
+        } catch (PackageManager.NameNotFoundException e1) {
+            Log.e("name not found", e1.toString());
+        } catch (NoSuchAlgorithmException e) {
+            Log.e("no such an algorithm", e.toString());
+        } catch (Exception e) {
+            Log.e("exception", e.toString());
+        }
+
+
+        AppEventsLogger.activateApp(this);
+        shareDialog = new ShareDialog(this);
+        share = (LinearLayout) findViewById(R.id.share);
     }
 
 
@@ -198,20 +221,37 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
 
         if (!"".equals(preferences) && Common.checkPreference == false) {
+            share.setVisibility(View.VISIBLE);
             Common.checkPreference = true;
             preferences = getSharedPreferences(Common.FILE_NAME, Activity.MODE_PRIVATE);
             String lat = preferences.getString("LAT", "");
             String lng = preferences.getString("LNG", "");
-            String title = preferences.getString("TITLE", "");
-            String snippet = preferences.getString("SNIPPET", "");
+            final String title = preferences.getString("TITLE", "");
+            final String snippet = preferences.getString("SNIPPET", "");
             LatLng warning = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
 
             mMap.addMarker(new MarkerOptions()
                     .position(warning)
                     .title(title)
                     .snippet(snippet)
-            );
+            ).showInfoWindow();
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(warning, 15));
+
+            final String uri = "https://www.google.com/maps/@" + lat + "," + lng + ",17z";
+            share.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (ShareDialog.canShow(ShareLinkContent.class)) {
+                        ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                                .setContentTitle(title)
+                                .setContentDescription(snippet)
+                                .setContentUrl(Uri.parse(uri))
+                                .build();
+
+                        shareDialog.show(linkContent);
+                    }
+                }
+            });
         }
     }
 
@@ -320,23 +360,28 @@ public class MainActivity extends AppCompatActivity
         drawerLayout.openDrawer(nav_draw);
     }
 
+    //search location
     public void openSearch(View view) {
-        try {
-            AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS).setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
-                    .build();
-            Intent intent =
-                    new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                            .setFilter(typeFilter)
-                            .build(this);
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+        if (Common.checkButtonClick == false) {
+            Common.checkButtonClick = true;
+            try {
+                AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                        .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS).setTypeFilter(AutocompleteFilter.TYPE_FILTER_GEOCODE)
+                        .build();
+                Intent intent =
+                        new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                .setFilter(typeFilter)
+                                .build(this);
+                startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+            } catch (GooglePlayServicesRepairableException e) {
+                // TODO: Handle the error.
+            } catch (GooglePlayServicesNotAvailableException e) {
+                // TODO: Handle the error.
+            }
         }
     }
 
+    //go to location
     public void gotoMyLocation(View view) {
         isShowMyLocation = false;
         mMap.clear();
@@ -345,7 +390,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     //canh bao tac duong
-
     public void warningJam(View view) {
         if (!DeviceInformationUltil.isNetworkConnected(this)) {
             dialogUltil.showDialogCheckNetwork(MainActivity.this);
@@ -441,6 +485,7 @@ public class MainActivity extends AppCompatActivity
         alarmManager.cancel(pendingIntent);
     }
 
+    //dialog check send warning
     private void dialogCheckSendWarning() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setCancelable(false);
@@ -448,22 +493,25 @@ public class MainActivity extends AppCompatActivity
         alertDialogBuilder.setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
-                if ("".equals(address)) {
-                    Toast.makeText(MainActivity.this, "Loi khong lay duoc dia chi hien tai cua ban!", Toast.LENGTH_LONG).show();
-                    Common.checkButtonClick = false;
-                } else {
-                    if (category_Id == 1) {
-                        Common.isCheckSendWardningJam = false;
+                if(Common.isCheckDialogSuccess == false){
+                    Common.isCheckDialogSuccess = true;
+                    if ("".equals(address)) {
+                        Toast.makeText(MainActivity.this, "Loi khong lay duoc dia chi hien tai cua ban!", Toast.LENGTH_LONG).show();
+                        Common.checkButtonClick = false;
+                        Common.isCheckDialogSuccess = false;
                     } else {
-                        Common.isCheckSendWardningAccident = false;
+                        if (category_Id == 1) {
+                            Common.isCheckSendWardningJam = false;
+                        } else {
+                            Common.isCheckSendWardningAccident = false;
+                        }
+                        SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                        create_time = df.format(Calendar.getInstance().getTime());
+                        Warning warning = new Warning(currentLatitude, currentLongitude, address, category_Id, create_time);
+                        warningAPI.addWarning(warning);
+                        dialogUltil.showDialogCheckSendWarningSuccess(MainActivity.this);
+                        Common.checkButtonClick = false;
                     }
-                    SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                    create_time = df.format(Calendar.getInstance().getTime());
-                    Warning warning = new Warning(currentLatitude, currentLongitude, address, category_Id, create_time);
-                    warningAPI.addWarning(warning);
-                    dialogUltil.showDialogCheckSendWarningSuccess(MainActivity.this);
-                    Common.checkButtonClick = false;
                 }
             }
 
@@ -502,6 +550,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Common.checkButtonClick = false;
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 mMap.clear();

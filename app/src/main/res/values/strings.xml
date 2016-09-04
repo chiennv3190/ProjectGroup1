@@ -8,4 +8,24 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">1567135340260473</string>
+
+    <string name="slide_1_title">Cảnh báo</string>
+    <string name="slide_1_desc">Cảnh báo cho mọi người vị trí có\ntai nạn, tắc đường</string>
+
+    <string name="slide_2_title">Cây xăng</string>
+    <string name="slide_2_desc">Hết xăng? Đừng lo chúng tôi sẽ chỉ cho bạn vị trí cây xăng!</string>
+
+    <string name="slide_3_title">ATM</string>
+    <string name="slide_3_desc">Muốn rút tiền mà không biết cây ATM ở đâu, mở App lên thôi!</string>
+
+    <string name="slide_4_title">ATM theo ngân hàng</string>
+    <string name="slide_4_desc">ATM của ngân hàng mình đang sử dụng ở đâu nhỉ? Chỉ vài click là biết!</string>
+
+    <string name="slide_5_title">Cafe</string>
+    <string name="slide_5_desc">Cafe! Nhưng chưa biết ngồi ở đâu.\n Đừng lo nhé :)</string>
+
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="gotit">GOT IT</string>
 </resources>

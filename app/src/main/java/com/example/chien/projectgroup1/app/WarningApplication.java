@@ -4,6 +4,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.example.chien.projectgroup1.network.WarningAPIService;
+import com.facebook.FacebookSdk;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,6 +21,7 @@ public class WarningApplication extends MultiDexApplication{
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         mRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_API)

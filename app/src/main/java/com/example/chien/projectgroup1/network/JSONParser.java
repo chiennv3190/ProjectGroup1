@@ -129,7 +129,7 @@ public class JSONParser {
     }
 
     private String convertInputStreamToString(InputStream inputStream) throws IOException{
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream, "utf-8"), 8);
         String line = "";
         String result = "";
         while((line = bufferedReader.readLine()) != null)
@@ -140,28 +140,23 @@ public class JSONParser {
     }
 
     public JSONObject getLocationInfo(double lat, double lng) {
-
+		String s = "";
         HttpGet httpGet = new HttpGet(
                 "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + "," + lng + "&sensor=false");
         HttpClient client = new DefaultHttpClient();
         HttpResponse response;
-        StringBuilder stringBuilder = new StringBuilder();
-
         try {
             response = client.execute(httpGet);
             HttpEntity entity = response.getEntity();
             InputStream stream = entity.getContent();
-            int b;
-            while ((b = stream.read()) != -1) {
-                stringBuilder.append((char) b);
-            }
+            s = convertInputStreamToString(stream);
         } catch (ClientProtocolException e) {
         } catch (IOException e) {
         }
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject = new JSONObject(stringBuilder.toString());
+            jsonObject = new JSONObject(s);
         } catch (JSONException e) {
             e.printStackTrace();
         }

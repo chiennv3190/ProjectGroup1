@@ -1,7 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#df4a3b</color>
-    <color name="colorPrimaryDark">#c9010e</color>
+    <color name="colorPrimary">#4fb5f4</color>
+    <color name="colorPrimaryDark">#3399CC</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorChiDuong">#000000</color>
+
+    //---color screen
+    <color name="bg1">#e74c3c</color>
+    <color name="bg3">#e67e22</color>
+    <color name="bg2">#f1c40f</color>
+    <color name="bg4">#2ecc71</color>
+    <color name="bg5">#1abc9c</color>
+
+    //---color dot active#e74c3c
+    <color name="dotlight1">#ef7b6f</color>
+    <color name="dotlight3">#ffb371</color>
+    <color name="dotlight2">#fde171</color>
+    <color name="dotlight4">#71fdac</color>
+    <color name="dotlight5">#70ffe3</color>
+
+    //---color dot
+    <color name="dotdark1">#932c21</color>
+    <color name="dotdark3">#b15a0f</color>
+    <color name="dotdark2">#b6940f</color>
+    <color name="dotdark4">#0baf50</color>
+    <color name="dotdark5">#0c8b72</color>
+
+    <array name="array_dot_light">
+        <item>@color/dotlight1</item>
+        <item>@color/dotlight2</item>
+        <item>@color/dotlight3</item>
+        <item>@color/dotlight4</item>
+        <item>@color/dotlight5</item>
+    </array>
+
+    <array name="array_dot_dark">
+        <item>@color/dotdark1</item>
+        <item>@color/dotdark2</item>
+        <item>@color/dotdark3</item>
+        <item>@color/dotdark4</item>
+        <item>@color/dotdark5</item>
+    </array>
 </resources>
