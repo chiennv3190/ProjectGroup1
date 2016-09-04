@@ -273,6 +273,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        share.setVisibility(View.GONE);
         if (position == 0 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
             Common.checkButtonClick = true;
             mMap.clear();
@@ -280,8 +281,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
             drawerLayout.closeDrawer(nav_draw);
         } else if (position == 1 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
-            String message = "Loading gas. Please wait...";
-            dialogUltil.progressDialog(MainActivity.this, message);
+            Common.checkButtonClick = true;
 
             mMap.clear();
             listGas = warningAPI.getGas();
@@ -290,11 +290,10 @@ public class MainActivity extends AppCompatActivity
                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_gas)).position(gas).title(listGas.get(i).getTitle()).snippet(listGas.get(i).getSnippet()));
             }
 
-            dialogUltil.dismissProgressDialog();
+            Common.checkButtonClick = false;
             drawerLayout.closeDrawer(nav_draw);
         } else if (position == 2 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
-            message = "Loading ATM. Please wait...";
-            dialogUltil.progressDialog(MainActivity.this, message);
+            Common.checkButtonClick = true;
 
             mMap.clear();
             listATM = warningAPI.getAllATM();
@@ -302,11 +301,10 @@ public class MainActivity extends AppCompatActivity
                 LatLng atm = new LatLng(listATM.get(i).getmLatATM(), listATM.get(i).getmLngATM());
                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_atm)).position(atm).title(listATM.get(i).getTitleATM()).snippet(listATM.get(i).getSnippetATM()));
             }
-            dialogUltil.dismissProgressDialog();
+            Common.checkButtonClick = false;
             drawerLayout.closeDrawer(nav_draw);
         } else if (position == 3 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
-            message = "Loading Bank. Please wait...";
-            dialogUltil.progressDialog(MainActivity.this, message);
+            Common.checkButtonClick = true;
 
             listBank = warningAPI.getBank();
             dialogBank = new Dialog(MainActivity.this);
@@ -319,8 +317,7 @@ public class MainActivity extends AppCompatActivity
             lvBank.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    message = "Loading ATM. Please wait...";
-                    dialogUltil.progressDialog(MainActivity.this, message);
+                    Common.checkButtonClick = true;
 
                     String bankName = listBank.get(i).getBankName();
                     mMap.clear();
@@ -331,15 +328,14 @@ public class MainActivity extends AppCompatActivity
                     }
                     dialogBank.dismiss();
 
-                    dialogUltil.dismissProgressDialog();
+                    Common.checkButtonClick = false;
                 }
             });
             dialogBank.show();
-            dialogUltil.dismissProgressDialog();
+            Common.checkButtonClick = false;
             drawerLayout.closeDrawer(nav_draw);
         } else if (position == 4 && Common.checkButtonClick == false && DeviceInformationUltil.isNetworkConnected(this)) {
-            String message = "Loading coffee. Please wait...";
-            dialogUltil.progressDialog(MainActivity.this, message);
+            Common.checkButtonClick = true;
             mMap.clear();
 
             listCoffee = warningAPI.getCoffee();
@@ -348,7 +344,7 @@ public class MainActivity extends AppCompatActivity
                 mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_coffee)).position(coffee).title(listCoffee.get(i).getTitle()).snippet(listCoffee.get(i).getSnippet()));
             }
 
-            dialogUltil.dismissProgressDialog();
+            Common.checkButtonClick = false;
             drawerLayout.closeDrawer(nav_draw);
         } else {
             dialogUltil.showDialogCheckNetwork(MainActivity.this);
@@ -451,7 +447,7 @@ public class MainActivity extends AppCompatActivity
             public void onInfoWindowClick(Marker marker) {
                 if (DeviceInformationUltil.isNetworkConnected(MainActivity.this)) {
                     mMap.clear();
-                    mMap.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()).snippet(marker.getSnippet()));
+                    mMap.addMarker(new MarkerOptions().position(marker.getPosition()).title(marker.getTitle()).snippet(marker.getSnippet())).showInfoWindow();
                     LatLng dest = marker.getPosition();
                     LatLng origin = new LatLng(currentLatitude, currentLongitude);
                     String url = getDirectionsUrl(origin, dest);
@@ -552,9 +548,10 @@ public class MainActivity extends AppCompatActivity
         Common.checkButtonClick = false;
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                share.setVisibility(View.GONE);
                 mMap.clear();
                 Place place = PlaceAutocomplete.getPlace(this, data);
-                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString()));
+                mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(place.getName().toString())).showInfoWindow();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(place.getLatLng())

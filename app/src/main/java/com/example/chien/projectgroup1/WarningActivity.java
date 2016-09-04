@@ -41,6 +41,7 @@ public class WarningActivity extends AppCompatActivity implements SwipeRefreshLa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_warning);
 
+        Common.checkButtonClick = false;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("WARNING");
@@ -57,9 +58,7 @@ public class WarningActivity extends AppCompatActivity implements SwipeRefreshLa
 //        runFadeInAnimation();
         swipeRefreshLayout.setOnRefreshListener(this);
         listView = (ListView) findViewById(R.id.lvWarning);
-        dialogUltil.progressDialog(WarningActivity.this,message);
         dataListWarning();
-        dialogUltil.dismissProgressDialog();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
